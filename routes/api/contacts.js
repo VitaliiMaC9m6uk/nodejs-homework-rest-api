@@ -7,14 +7,16 @@ const {
   deleteContact,
   changeContact,
 } = require("../../controllers/contactController");
+const { checkContactId, checkCreateContactData } = require('../../middlewares/contactMiddlewares');
 
 const router = express.Router()
 
 router
   .route("/")
-  .post(createContact)
+  .post(checkCreateContactData,createContact)
   .get(getContacts);
 
+router.use("/:contactId",checkContactId);  
 router
   .route("/:contactId")
   .get(getOneContact)
