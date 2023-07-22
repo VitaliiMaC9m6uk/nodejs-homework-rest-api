@@ -77,8 +77,8 @@ exports.updateStatusContact = async (req, res, next) => {
     const body = req.body;
     const id = req.params.contactId;
 
-    if (body === null) {
-      throw new AppError(400, "Missing fields");
+    if (body.favorite === null) {
+      throw new AppError(400, "Missing fields favorite");
     }
 
     const updateContact = await Contact.findByIdAndUpdate(
