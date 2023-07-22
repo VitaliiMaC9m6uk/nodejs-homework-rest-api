@@ -1,4 +1,4 @@
-const express = require('express');
+const express = require("express");
 
 const {
   getContacts,
@@ -6,22 +6,24 @@ const {
   createContact,
   deleteContact,
   changeContact,
+  updateStatusContact,
 } = require("../../controllers/contactController");
-const { checkContactId, checkCreateContactData } = require('../../middlewares/contactMiddlewares');
+const {
+  checkContactId,
+  checkCreateContactData,
+} = require("../../middlewares/contactMiddlewares");
 
-const router = express.Router()
+const router = express.Router();
 
-router
-  .route("/")
-  .post(checkCreateContactData,createContact)
-  .get(getContacts);
+router.route("/").post(checkCreateContactData, createContact).get(getContacts);
 
-router.use("/:contactId",checkContactId);  
+router.use("/:contactId", checkContactId);
 router
   .route("/:contactId")
   .get(getOneContact)
   .delete(deleteContact)
-  .put(changeContact)
+  .put(changeContact);
 
+router.route("/:contactId/favorite").patch(updateStatusContact);
 
-module.exports = router
+module.exports = router;

@@ -1,10 +1,12 @@
 const Contact = require("../models/contactModel");
 
 const { AppError, contactValidators } = require("../utils");
+const contactServices = require("../services/contactServices");
 
 exports.getContacts = async (req, res, next) => {
   try {
     const contacts = await Contact.find();
+
     res.status(200).json({
       message: "Success",
       contacts,
@@ -31,7 +33,6 @@ exports.getOneContact = async (req, res, next) => {
 
 exports.createContact = async (req, res, next) => {
   try {
-   
     const newContact = await Contact.create(req.body);
 
     res.status(201).json(newContact);
@@ -42,8 +43,8 @@ exports.createContact = async (req, res, next) => {
 
 exports.deleteContact = async (req, res, next) => {
   try {
-    const contactId = req.params.contactId;
-   
+    const { contactId } = req.params;
+
     await Contact.findByIdAndDelete(contactId);
 
     res.sendStatus(204);
@@ -54,26 +55,41 @@ exports.deleteContact = async (req, res, next) => {
 
 exports.changeContact = async (req, res, next) => {
   try {
-    const contactId = req.params.contactId;
     const body = req.body;
 
     if (body === null) {
       throw new AppError(400, "Missing fields");
     }
 
- 
-    const contactUpdate = await Contact.findByIdAndUpdate(
-      contactId,
+    const updateContact = await contactServices.updateContact(
+      req.params.contactId,
+      body
+    );
+
+    res.status(200).json(updateContact);
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.updateStatusContact = async (req, res, next) => {
+  try {
+    const body = req.body;
+    const id = req.params.contactId;
+
+    if (body === null) {
+      throw new AppError(400, "Missing fields");
+    }
+
+    const updateContact = await Contact.findByIdAndUpdate(
+      id,
       {
-        name: req.body.name,
-        email: req.body.email,
-        phone: req.body.phone,
-        favorite: req.body.favorite,
+        favorite: body.favorite,
       },
       { new: true }
     );
-
-    res.status(200).json(contactUpdate);
+    
+    res.status(200).json(updateContact);
   } catch (error) {
     next(error);
   }

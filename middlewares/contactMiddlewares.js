@@ -1,44 +1,47 @@
-const { Types } = require("mongoose");
 const { AppError, contactValidators } = require("../utils");
 const Contact = require("../models/contactModel");
+const contactServices = require("../services/contactServices");
 
 exports.checkContactId = async (req, res, next) => {
-    try {
-        const { contactId } = req.params;
+  try {
+    const { contactId } = req.params;
+    
+    await contactServices.contactExistsById(contactId);
 
-        const idIsValid = Types.ObjectId.isValid(contactId);
-
-        if (!idIsValid) throw new AppError(404, "valid");
-
-        const contactExists = await Contact.exists({ _id: contactId });
-
-        if (!contactExists) throw new AppError(404, "Contact does not exist");
-        
-        next();
-    }
-    catch (error) {
-        next(error)
-    }
+    next();
+  } catch (error) {
+    next(error);
+  }
 };
 
 exports.checkCreateContactData = async (req, res, next) => {
-    try {
-       const { error, value } = contactValidators.createContactDataValidator(
-         req.body
-       );
+  try {
+    const { error, value } = contactValidators.updateContactDataValidator(
+      req.body
+    );
 
-       if (error) {
-         console.log(error);
+    if (error) {
+      console.log(error);
 
-         throw new AppError(400, "Invalid contact data..");
-        }
-       
-        const contactExists = await Contact.exists({ name: value.name });
-        req.body = value;
-
-        next();
+      throw new AppError(400, "Invalid contact data..");
     }
-    catch (error) {
-        next(error)
-    }
-}
+
+    const contactExists = await Contact.exists({
+      $or: [
+        {
+          name: value.name,
+          email: value.email,
+        },
+      ],
+    });
+
+    if (contactExists)
+      throw new AppError(409, "Contact with this name exists..");
+
+    req.body = value;
+
+    next();
+  } catch (error) {
+    next(error);
+  }
+};
