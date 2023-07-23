@@ -1,21 +1,16 @@
-const { AppError, contactValidators } = require("../utils");
+const { AppError, contactValidators, catchAsync } = require("../utils");
 const Contact = require("../models/contactModel");
 const contactServices = require("../services/contactServices");
 
-exports.checkContactId = async (req, res, next) => {
-  try {
-    const { contactId } = req.params;
+exports.checkContactId = catchAsync(async (req, res, next) => {   
     
-    await contactServices.contactExistsById(contactId);
+    await contactServices.contactExistsById(req.params.contactId);
 
-    next();
-  } catch (error) {
-    next(error);
-  }
-};
+    next();  
+});
 
-exports.checkCreateContactData = async (req, res, next) => {
-  try {
+exports.checkCreateContactData = catchAsync(async (req, res, next) => {
+  
     const { error, value } = contactValidators.updateContactDataValidator(
       req.body
     );
@@ -40,8 +35,5 @@ exports.checkCreateContactData = async (req, res, next) => {
 
     req.body = value;
 
-    next();
-  } catch (error) {
-    next(error);
-  }
-};
+    next();  
+});
