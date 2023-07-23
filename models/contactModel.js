@@ -1,24 +1,28 @@
 const { Schema, model } = require("mongoose");
 
-const contactSchema = new Schema(
-    {
-        name: {
-            type: String,
-            required: [true, 'Set name for contact'],
-        },
-        email: {
-            type: String,            
-        },
-        phone: {
-            type: String,           
-        },
-        favorite: {
-            type: Boolean,
-            default:false,
-        }
-    }
-);
+const phoneRegexp =
+  /^ [\+] ? [(] ? [0 - 9]{ 3}[)]?[-\s\.]?[0 - 9]{ 3 } [-\s\.] ? [0 - 9]{ 4, 6 } $/;
+const emailRegexp = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 
-const Contact = model('Contact', contactSchema);
+const contactSchema = new Schema({
+  name: {
+    type: String,
+    required: [true, "Set name for contact"],
+  },
+  email: {
+    type: String,
+    match: emailRegexp,
+  },
+  phone: {
+    type: String,
+    match: phoneRegexp,
+  },
+  favorite: {
+    type: Boolean,
+    default: false,
+  },
+});
+
+const Contact = model("Contact", contactSchema);
 
 module.exports = Contact;
