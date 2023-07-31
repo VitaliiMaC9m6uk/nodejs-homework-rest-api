@@ -13,8 +13,11 @@ const {
   checkContactId,
   checkCreateContactData,
 } = require("../../middlewares/contactMiddlewares");
+const { protect } = require("../../middlewares/userMiddlewares");
 
 const router = express.Router();
+
+router.use(protect)
 
 router.route("/").post(checkCreateContactData, createContact).get(getContacts);
 

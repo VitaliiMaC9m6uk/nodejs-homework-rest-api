@@ -1,5 +1,3 @@
-const Contact = require("../models/contactModel");
-
 const { AppError, catchAsync } = require("../utils");
 const {
   addContact,
@@ -11,7 +9,7 @@ const {
 const contactServices = require("../services/contactServices");
 
 exports.getContacts = catchAsync(async (req, res, next) => {
-  const contacts = await getAllContacts.listContacts();
+  const contacts = await getAllContacts.listContacts(req.user._id);
 
   res.status(200).json({
     message: "Success",
@@ -30,7 +28,7 @@ exports.getOneContact = catchAsync(async (req, res, next) => {
 });
 
 exports.createContact = catchAsync(async (req, res, next) => {
-  const newContact = await addContact.addContact(req.body);
+  const newContact = await addContact.addContact(req.body, req.user);
 
   res.status(201).json(newContact);
 });
@@ -62,7 +60,7 @@ exports.updateStatusContact = catchAsync(async (req, res, next) => {
   if (body.favorite === null) {
     throw new AppError(400, "Missing fields favorite");
   }
-  
+
   const updateContact = await changeStatusContact.changeStatusContact(id, body);
 
   res.status(200).json(updateContact);
