@@ -28,3 +28,7 @@ exports.checkToken = (token) => {
     throw new AppError(401, 'Not logged in..');
   }
 };
+exports.broceToken = (id) =>
+  jwt.sign({ id }, process.env.JWT_SECRET, {
+    expiresIn: 0,
+  });

@@ -7,7 +7,7 @@ exports.signupUserDataValidator = (data) =>
   Joi.object()
     .keys({
       email: Joi.string().email().required(),
-      password: Joi.string().regex(PASSWD_REGEX).required(),
+      password: Joi.string().required(),
       subscription: Joi.string(),
     })
     .validate(data);

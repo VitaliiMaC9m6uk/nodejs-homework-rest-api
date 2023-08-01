@@ -2,11 +2,14 @@ const User = require("../../models/userModel");
 const { signToken } = require("../../services/jwtService");
 
 exports.createUser = async (body) => {
-  const newUser = await User.create(body);
 
-  newUser.password = undefined;
+  const user = await User.create(body);  
 
-  const token = signToken(newUser.id);
+  user.token = signToken(user.id);
 
-  return { user: newUser, token };
+  await user.save();
+
+  user.password = undefined;
+  
+  return user;
 };
