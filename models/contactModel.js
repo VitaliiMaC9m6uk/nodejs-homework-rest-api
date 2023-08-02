@@ -1,7 +1,7 @@
 const { Schema, model } = require("mongoose");
 
-const phoneRegexp =
-  /^ [\+] ? [(] ? [0 - 9]{ 3}[)]?[-\s\.]?[0 - 9]{ 3 } [-\s\.] ? [0 - 9]{ 4, 6 } $/;
+// const phoneRegexp =
+//   /^ [\+] ? [(] ? [0 - 9]{ 3}[)]?[-\s\.]?[0 - 9]{ 3 } [-\s\.] ? [0 - 9]{ 4, 6 } $/;
 const emailRegexp = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 
 const contactSchema = new Schema({
@@ -14,14 +14,18 @@ const contactSchema = new Schema({
     match: emailRegexp,
   },
   phone: {
-    type: String,
-    match: phoneRegexp,
+    type: String,   
   },
   favorite: {
     type: Boolean,
     default: false,
   },
-});
+  owner: {
+    type: Schema.Types.ObjectId,
+    ref: "user",
+  },  
+},
+{ versionKey: false, timestamps: true });
 
 const Contact = model("Contact", contactSchema);
 
