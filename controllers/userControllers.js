@@ -1,5 +1,5 @@
 const { catchAsync } = require("../utils");
-const { create, login, logout, current } = require("./users");
+const { create, login, logout, current, update } = require("./users");
 
 exports.signup = catchAsync(async (req, res, next) => {
   const user = await create.createUser(req.body);
@@ -11,6 +11,7 @@ exports.signup = catchAsync(async (req, res, next) => {
 exports.login = catchAsync(async (req, res) => {
   const user = await login.loginUser(req.body);
 
+  req.user = user;  
   res.status(200).json({
     user    
   });
@@ -28,3 +29,12 @@ exports.logout = catchAsync(async (req, res, next) => {
   
   res.status(204).json({ user });
 });
+
+exports.updateMe = catchAsync(async (req, res) => {
+  const { user, file } = req;
+
+  const updateUser = await update.updateUser(user, file);
+  res.status(200).json({
+    user: updateUser
+  })
+})

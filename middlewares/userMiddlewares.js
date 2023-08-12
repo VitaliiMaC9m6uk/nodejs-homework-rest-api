@@ -1,4 +1,5 @@
 const User = require("../models/userModel");
+// const ImageService = require("../services/imageService");
 const jwtService = require("../services/jwtService")
 const { catchAsync, userValidators, AppError } = require("../utils");
 
@@ -28,7 +29,7 @@ exports.checkLoginUser = catchAsync(async (req, res, next) => {
   next();
 });
 
-exports.protect = catchAsync(async (req, res, next) => {
+exports.protect = catchAsync(async (req, res, next) => {    
   const token = req.headers.authorization?.startsWith("Bearer") && req.headers.authorization.split(" ")[1];
   const userId = jwtService.checkToken(token);
 
@@ -38,4 +39,6 @@ exports.protect = catchAsync(async (req, res, next) => {
   
   req.user = currentUser;
   next();
-})
+});
+
+// exports.uploadUserAvatar = ImageService.upload('avatars');
