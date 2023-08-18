@@ -12,7 +12,7 @@ exports.loginUser = async ({ email, password }) => {
   if (!passwordIsValid) throw new AppError(401, "Email or password is wrong");
 
   user.token = signToken(user.id);
-
+  
   await user.save();
   
   user.password = undefined;

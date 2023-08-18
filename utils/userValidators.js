@@ -19,3 +19,12 @@ exports.loginUserDataValidator = (data) =>
       password: Joi.string().regex(PASSWD_REGEX).required(),
     })
     .validate(data);
+
+exports.userVerifyEmail = (data) =>
+  Joi.object()
+    .keys({
+  email: Joi.string()  
+    .email()
+    .required()    
+    })
+.validate(data)

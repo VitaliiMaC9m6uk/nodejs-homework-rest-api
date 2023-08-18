@@ -29,16 +29,25 @@ exports.checkLoginUser = catchAsync(async (req, res, next) => {
   next();
 });
 
-exports.protect = catchAsync(async (req, res, next) => {    
+exports.protect = catchAsync(async (req, res, next) => {
   const token = req.headers.authorization?.startsWith("Bearer") && req.headers.authorization.split(" ")[1];
   const userId = jwtService.checkToken(token);
 
   const currentUser = await User.findById(userId);
 
   if (!currentUser) throw new AppError(401, "Not authorized");
-  
+
   req.user = currentUser;
   next();
 });
 
+exports.checkVerifyUser = catchAsync(async (req, res, next) => {
+  const email = req.body.email;
+
+  const user = await User.find({ email });
+
+  if(!user[0].verify) throw new AppError(400,'User not verify Email')
+
+  next();
+})
 // exports.uploadUserAvatar = ImageService.upload('avatars');
