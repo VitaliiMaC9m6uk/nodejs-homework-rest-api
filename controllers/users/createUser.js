@@ -5,8 +5,6 @@ exports.createUser = async (body) => {
 
   const user = await User.create(body);  
 
-  user.token = signToken(user.id);
-
   await user.save();
 
   user.password = undefined;
